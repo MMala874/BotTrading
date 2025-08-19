@@ -1,0 +1,58 @@
+# Config generale
+symbol: "EURUSD=X"
+interval: "1h"
+start: "2021-01-01"
+end: null
+
+initial_cash: 10000.0
+
+# Costi (Forex)
+commission_pct: 0.0002     # 0.02% per lato
+slippage_pct: 0.0003       # 0.03% medio
+spread_pct: 0.0001         # 0.01% (simulazione bid/ask)
+
+# Rischio
+risk:
+  risk_per_trade: 0.01       # 1% del capitale
+  daily_dd_limit: 0.05       # ferma se drawdown giornaliero > 5%
+  total_dd_limit: 0.2        # ferma se drawdown totale > 20%
+  trailing_atr_mult: 2.0     # trailing stop = N * ATR
+  atr_window: 14
+
+# Regime e MTF
+filters:
+  adx_period: 14
+  adx_trend_min: 20          # sopra questa soglia privilegia trend
+  mtf:
+    enabled: true
+    higher_interval_ratio: 4 # es. 1h -> MA su 4h
+    ma_period: 50
+
+# News filter (opzionale)
+news_filter:
+  enabled: false
+  csv_path: "news_events.csv"
+  blackout_minutes_before: 30
+  blackout_minutes_after: 30
+  impact_levels: ["high","medium"]  # quali impatti filtrare
+
+# Conflitti tra bot
+conflict_policy: "block_opposite"  # block_opposite | netting | allow
+bot_priority: ["TREND", "MEANREV", "BREAKOUT", "MACD", "BOLLINGER"]
+
+strategies:
+  TREND:
+    type: "macd_trend"
+    params: { fast: 12, slow: 26, signal: 9 }
+  MEANREV:
+    type: "rsi_mean_reversion"
+    params: { period: 14, low: 30, high: 70 }
+  BOLLINGER:
+    type: "bollinger_reversion"
+    params: { period: 20, num_std: 2.0 }
+  BREAKOUT:
+    type: "donchian_breakout"
+    params: { window: 55, exit_window: 20 }
+  MACD:
+    type: "macd_trend"
+    params: { fast: 8, slow: 21, signal: 9 }

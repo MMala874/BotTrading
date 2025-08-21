@@ -1,0 +1,39 @@
+# Esempio di estensione config (da fondere con il vostro config.yaml)
+data_sources:
+  preferred: "oanda"   # o: yahoo, dukascopy_csv
+  yahoo:
+    symbol: "EURUSD=X"
+    interval: "1h"
+    start: "2021-01-01"
+    end: null
+  oanda:
+    instrument: "EUR_USD"
+    granularity: "H1"
+    from: "2021-01-01T00:00:00Z"
+    to: null
+    price: "M"
+    batch: 5000
+  dukascopy_csv:
+    path: "data/EURUSD_H1_dukascopy.csv"
+    tz: "UTC"
+
+execution:
+  broker: "oanda"   # o: paper
+  oanda:
+    account_type: "practice"   # practice | live
+    account_id: "YOUR_ACCOUNT_ID"
+    api_key: "YOUR_API_KEY"
+    api_url_practice: "https://api-fxpractice.oanda.com/v3"
+    api_url_live: "https://api-fxtrade.oanda.com/v3"
+  paper:
+    starting_cash: 10000.0
+
+monitoring:
+  telegram:
+    enabled: false
+    bot_token: "YOUR_TELEGRAM_BOT_TOKEN"
+    chat_id: "YOUR_CHAT_ID"
+  heartbeat:
+    enabled: true
+    file: "results/heartbeat.txt"
+    interval_seconds: 60

@@ -1,27 +1,22 @@
-import pandas as pd
-from dukascopy import Downloader
 
-def get_data_dukascopy(symbol="EURUSD", 
-                       start="2015-01-01", 
-                       end="2020-01-01", 
-                       timeframe="1h"):
+from datetime import datetime
+import dukascopy_python
+from dukascopy_python.instruments import INSTRUMENT_FX_MAJORS_EUR_USD
+from dukascopy_python import OFFER_SIDE_BID, INTERVAL_HOUR_1
+
+def get_data_dukascopy(symbol=INSTRUMENT_FX_MAJORS_EUR_USD,
+                       start="2015-01-01",
+                       end=None,
+                       interval=INTERVAL_HOUR_1,
+                       offer_side=OFFER_SIDE_BID):
     """
-    Scarica dati Forex da Dukascopy.
-
-    Args:
-        symbol (str): Coppia valutaria, es. "EURUSD".
-        start (str): Data inizio (YYYY-MM-DD).
-        end (str): Data fine (YYYY-MM-DD).
-        timeframe (str): "tick", "1m", "5m", "15m", "1h", "1d".
-
-    Returns:
-        pd.DataFrame con [Date, Open, High, Low, Close, Volume].
+    Scarica dati storici da Dukascopy. Restituisce un pd.DataFrame.
     """
-    dl = Downloader()
-    df = dl.get(symbol, start, end, timeframe)
+    df = dukascopy_python.fetch(
+        instrument=symbol,
+        interval=interval,
+        offer_side=offer_side,
+        start=datetime.fromisoformat(start),
+        end=datetime.fromisoformat(end) if end else None
+    )
     return df
-
-if __name__ == "__main__":
-    data = get_data_dukascopy("EURUSD", "2018-01-01", "2019-01-01", "1h")
-    print(data.head())
-    print(data.tail())

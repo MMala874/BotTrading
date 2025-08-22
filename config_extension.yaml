@@ -37,3 +37,9 @@ monitoring:
     enabled: true
     file: "results/heartbeat.txt"
     interval_seconds: 60
+
+# Esempio aggiunta strategia mean reversion
+strategies:
+  MR_RSI:
+    type: "mean_reversion_adx_rsi"
+    params: { rsi_period: 14, rsi_low: 30, rsi_high: 70, adx_period: 14, adx_threshold: 20 }

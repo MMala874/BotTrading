@@ -8,3 +8,17 @@ Questo pacchetto aggiunge cinque cose richieste **prima del backtesting definiti
 5) **Test di robustezza & monitoraggio**: Walk‑Forward, Monte Carlo, Telegram alerts e heartbeat.
 
 > Nota: file in stile “skeleton” dove indicato: completare chiavi/API e mapping ordini prima dell’uso live.
+
+
+## Nuova strategia: mean_reversion_adx_rsi
+- Tipo: `mean_reversion_adx_rsi`
+- Parametri: `rsi_period`, `rsi_low`, `rsi_high`, `adx_period`, `adx_threshold`
+
+Esempio config:
+
+```
+strategies:
+  MR_RSI:
+    type: "mean_reversion_adx_rsi"
+    params: { rsi_period: 14, rsi_low: 30, rsi_high: 70, adx_period: 14, adx_threshold: 20 }
+```

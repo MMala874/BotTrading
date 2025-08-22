@@ -1,31 +1,18 @@
 import numpy as np
-import pandas as pd
 
-def sharpe_ratio(returns, risk_free_rate=0.0):
-    excess_returns = returns - risk_free_rate
-    return np.mean(excess_returns) / np.std(excess_returns, ddof=1)
+def compute_metrics(returns):
+    sharpe = np.mean(returns) / (np.std(returns) + 1e-9)
+    dd = max_drawdown(returns)
+    turnover = np.sum(np.abs(np.diff(np.sign(returns))))
 
-def sortino_ratio(returns, risk_free_rate=0.0):
-    downside = returns[returns < 0]
-    if downside.std(ddof=1) == 0:
-        return np.inf
-    return (np.mean(returns) - risk_free_rate) / downside.std(ddof=1)
+    return {
+        "Sharpe": sharpe,
+        "MaxDrawdown": dd,
+        "Turnover": turnover
+    }
 
-def calmar_ratio(returns, equity_curve):
-    max_dd = max_drawdown(equity_curve)
-    if max_dd == 0:
-        return np.inf
-    return np.mean(returns) / abs(max_dd)
-
-def max_drawdown(equity_curve):
-    roll_max = equity_curve.cummax()
-    drawdown = (equity_curve - roll_max) / roll_max
-    return drawdown.min()
-
-def profit_factor(gains, losses):
-    if abs(losses.sum()) == 0:
-        return np.inf
-    return gains.sum() / abs(losses.sum())
-
-def turnover(trades):
-    return len(trades)
+def max_drawdown(returns):
+    cumret = (1 + returns).cumprod()
+    peak = cumret.expanding(min_periods=1).max()
+    dd = (cumret - peak) / peak
+    return dd.min()

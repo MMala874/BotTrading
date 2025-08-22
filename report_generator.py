@@ -1,11 +1,8 @@
 import pandas as pd
-from backtest_pro import run_backtest, generate_report
 
-def main():
-    data = pd.read_csv("sample_data.csv")
-    results, enriched_data = run_backtest(data)
-    print("Risultati:", results)
-    generate_report(enriched_data, results)
-
-if __name__ == "__main__":
-    main()
+def save_report(results, filename="report.xlsx"):
+    df = results["history"]
+    metrics = results["metrics"]
+    df.to_excel(filename, index=False)
+    print(f"Report salvato in {filename}")
+    print("Metriche:", metrics)

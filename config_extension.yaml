@@ -43,3 +43,30 @@ strategies:
   MR_RSI:
     type: "mean_reversion_adx_rsi"
     params: { rsi_period: 14, rsi_low: 30, rsi_high: 70, adx_period: 14, adx_threshold: 20 }
+
+
+risk:
+  max_currency_exposure: 0.3
+
+execution:
+  mode: dynamic
+  allowed_hours: [7,20]
+
+# Controlli operativi aggiuntivi
+trading_hours:
+  - start: "07:00"
+    end: "22:00"
+    weekdays: [1,2,3,4,5]
+max_currency_exposure:
+  EUR: 2
+  USD: 2
+  JPY: 2
+execution:
+  mode: dynamic
+  spread_base: 0.00010
+  slippage_base: 0.00005
+  session_multipliers:
+    Asia: 1.4
+    London: 1.0
+    NewYork: 1.2
+    Off: 1.8

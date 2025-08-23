@@ -1,24 +1,32 @@
-# Trading Bots PRO+ – Upgrade Pack
 
-Questo pacchetto aggiunge cinque cose richieste **prima del backtesting definitivo**:
-1) **Strategie logiche e spiegabili** (razionale chiaro, parametri trasparenti).
-2) **Connettori dati solidi**: Yahoo, OANDA (placeholder API), Dukascopy CSV.
-3) **Backtest robusto con metriche avanzate**: Sharpe, Sortino, Calmar, MaxDD, Turnover, Profit Factor, Hit Rate, Avg Win/Loss.
-4) **Execution layer** astratto + **OANDA broker** (paper/live switch) – skeleton pronto per collegare ordini reali.
-5) **Test di robustezza & monitoraggio**: Walk‑Forward, Monte Carlo, Telegram alerts e heartbeat.
+# Pro Features Extension
 
-> Nota: file in stile “skeleton” dove indicato: completare chiavi/API e mapping ordini prima dell’uso live.
+## Dynamic Spread/Slippage
+`execution_utils.py` provides `dynamic_spread_slippage()` to adjust execution costs by session (Asia/London/NY).
 
+## Time-of-Day Filter
+`filters_time.py` has `allow_trade_time()` to restrict signals to desired trading hours.
 
-## Nuova strategia: mean_reversion_adx_rsi
-- Tipo: `mean_reversion_adx_rsi`
-- Parametri: `rsi_period`, `rsi_low`, `rsi_high`, `adx_period`, `adx_threshold`
+## Currency Exposure Control
+`orchestrator.py` includes `check_currency_exposure()` to aggregate exposure by currency and flag violations.
 
-Esempio config:
+## Advanced Metrics
+`report_generator.py` now computes Ulcer Index, Ulcer Performance Index, Deflated Sharpe Ratio.
 
+## Config Additions (example)
+```yaml
+risk:
+  daily_dd_limit: 0.05
+  total_dd_limit: 0.2
+  max_currency_exposure: 0.3
+
+execution:
+  mode: dynamic   # or fixed
+  allowed_hours: [7,20]
 ```
-strategies:
-  MR_RSI:
-    type: "mean_reversion_adx_rsi"
-    params: { rsi_period: 14, rsi_low: 30, rsi_high: 70, adx_period: 14, adx_threshold: 20 }
-```
+
+
+## Novità integrate
+- **Filtro time-of-day**: `trading_hours` nel config, applicato in orchestrator.
+- **Limite exposure per currency**: `max_currency_exposure` gestito da PositionManager.
+- **Costi dinamici per sessione**: utility in `execution_utils.py` (integrazione esecuzione/backtest da adattare al tuo motore).

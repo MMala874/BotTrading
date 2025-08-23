@@ -3,12 +3,13 @@ import pandas as pd
 from data import load_data
 from strategies import generate_signals
 from positioning import PositionManager
+from filters_time import allowed_trading_window
 from backtest_pro import run_backtest, run_strategy, plot_equity, RESULTS_DIR
 
 def orchestrate():
     cfg = yaml.safe_load(open("config.yaml"))
     df = load_data(cfg['symbol'], cfg['interval'], cfg['start'], cfg['end'])
-    pm = PositionManager(policy=cfg['conflict_policy'], bot_priority=cfg.get('bot_priority', []))
+    pm = PositionManager(policy=cfg['conflict_policy'], bot_priority=cfg.get('bot_priority', []), max_currency_exposure=cfg.get('max_currency_exposure'))
 
     all_logs = []; all_metrics = []
 
@@ -45,3 +46,15 @@ def orchestrate():
 
 if __name__ == "__main__":
     orchestrate()
+
+
+# === Exposure control utility ===
+def check_currency_exposure(positions, max_exposure:float=0.2):
+    """positions: list of (symbol, size in lots). Returns dict exposure by currency"""
+    exposure = {}
+    for sym,size in positions:
+        base,quote = sym[:3], sym[3:]
+        exposure[base] = exposure.get(base,0)+size
+        exposure[quote] = exposure.get(quote,0)-size
+    viol = {cur:val for cur,val in exposure.items() if abs(val)>max_exposure}
+    return exposure, viol
